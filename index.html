@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Goldsmith’s Bench</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#121917">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="میز زرگر">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Vazirmatn:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eceee9;--panel:#f8f9f6;--ink:#1c2622;--mut:#5b6760;--line:#cfd5cd;--acc:#7a540a;--felt:#24413a;--feltink:#f1efe4;--gold:#e8c46a;
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121917;--panel:#1b2622;--ink:#e8ece6;--mut:#98a59d;--line:#2e3d37;--acc:#e0b650;--felt:#24413a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121917;--panel:#1b2622;--ink:#e8ece6;--mut:#98a59d;--line:#2e3d37;--acc:#e0b650;--felt:#24413a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+header{padding:20px 16px 8px;max-width:640px;margin:0 auto}
+h1{font-size:1.6rem;font-weight:600;letter-spacing:-.01em;margin:0}
+header p{margin:2px 0 0;color:var(--mut);font-size:.95rem}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding:8px 16px;max-width:640px;margin:0 auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;border:1px solid transparent;background:none;color:var(--mut);font:inherit;font-weight:500;padding:8px 14px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--felt);color:var(--gold);border-color:var(--felt)}
+.tabs button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+main{max-width:640px;margin:0 auto;padding:16px}
+section[hidden]{display:none}
+h2{font-size:1.1rem;margin:22px 0 4px;font-weight:600}
+h2:first-child{margin-top:0}
+.hint{color:var(--mut);font-size:.9rem;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+label{display:flex;flex-direction:column;gap:4px;font-size:.88rem;color:var(--mut)}
+input,select{font:inherit;font-size:1rem;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;width:100%;min-width:0}
+.out{margin:0 0 6px;background:var(--felt);color:var(--feltink);border-radius:12px;padding:6px 16px}
+.out div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid rgba(241,239,228,.14)}
+.out div:last-child{border-bottom:0}
+.out dt{opacity:.8;font-size:.92rem}
+.out dd{margin:0;font-variant-numeric:tabular-nums;font-weight:500;text-align:right}
+.out div:first-child dd{color:var(--gold);font-size:1.35rem;font-weight:600}
+.out .err{color:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:.92rem;font-variant-numeric:tabular-nums}
+td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+.scroll{overflow-x:auto}
+.lot,.lots-h{display:grid;grid-template-columns:1fr 1fr 44px;gap:8px;margin-bottom:8px;align-items:center}.lots-h{font-size:.88rem;color:var(--mut);margin-bottom:4px}.btn,.lot button{font:inherit;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:10px 14px;cursor:pointer}.lot button{height:100%;padding:0}.btn{margin:2px 0 14px}.btn:focus-visible,.lot button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+#lang{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-size:.9rem;padding:6px 14px;border-radius:999px;cursor:pointer;flex:none}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}[dir=rtl] body{font-family:"Vazirmatn","Instrument Sans",system-ui,sans-serif}[dir=rtl] input{direction:ltr;text-align:right}.out dd{unicode-bidi:plaintext}#lang:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+footer{max-width:640px;margin:0 auto;padding:8px 16px 32px;color:var(--mut);font-size:.82rem}
+
+:root{--gl:rgba(255,255,255,.42);--glb:rgba(255,255,255,.7);--gls:0 8px 32px rgba(30,50,45,.12)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--gl:rgba(255,255,255,.07);--glb:rgba(255,255,255,.16);--gls:0 8px 32px rgba(0,0,0,.35)}:root:not([data-theme="light"]) body::after{opacity:.45}}
+:root[data-theme="dark"]{--gl:rgba(255,255,255,.07);--glb:rgba(255,255,255,.16);--gls:0 8px 32px rgba(0,0,0,.35)}
+:root[data-theme="dark"] body::after{opacity:.45}
+body::after{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 40% at 10% 5%,rgba(232,196,106,.6),transparent 70%),radial-gradient(55% 40% at 95% 15%,rgba(54,150,170,.5),transparent 70%),radial-gradient(60% 45% at 5% 75%,rgba(76,140,70,.45),transparent 70%),radial-gradient(55% 40% at 95% 90%,rgba(220,50,60,.35),transparent 70%)}
+body::before{background:transparent;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
+nav{background:var(--gl);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--glb)}
+section{background:var(--gl);-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);border:1px solid var(--glb);border-radius:28px;padding:18px;box-shadow:var(--gls),inset 0 1px 0 rgba(255,255,255,.5)}
+input,select,.btn,.lot button,#lang{background:var(--gl);border-color:var(--glb);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-radius:14px}
+.tabs button[aria-selected="true"]{background:rgba(36,65,58,.78);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.out{background:rgba(36,65,58,.74);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);border:1px solid rgba(255,255,255,.2);border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+td,th{border-bottom-color:var(--glb)}
+.top{align-items:center}#theme{border:1px solid var(--glb);background:var(--gl);color:var(--ink);font:inherit;padding:6px 12px;border-radius:14px;cursor:pointer;flex:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}#theme:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+:root{--gold:#d9b258}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--mut:#85938b}}
+:root[data-theme="dark"]{--mut:#85938b}
+.out dt{opacity:.72}.top h1{flex:1}.logo{height:40px;width:auto;flex:none}
+</style>
+</head>
+<body>
+<header>
+<div class="top"><img class="logo" alt="" src="data:image/png;base64,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"><h1>Goldsmith’s Bench</h1><button id="theme" type="button" aria-label="Theme">☀️</button><button id="lang" type="button">فارسی</button></div>
+<p>Every measure in one place. Type a number, read the result.</p>
+</header>
+<nav><div class="tabs" role="tablist" id="tabs"></div></nav>
+<main>
+
+<section id="units" data-name="Units">
+<h2>Weight converter</h2>
+<p class="hint">Enter a weight and pick its unit. All other units update.</p>
+<div class="grid">
+<label>Weight<input id="u-val" type="number" inputmode="decimal" value="10" step="any"></label>
+<label>Unit<select id="u-from">
+<option value="g">grams (g)</option><option value="kg">kilograms</option><option value="ct">carats (ct)</option><option value="ozt">troy ounces</option><option value="dwt">pennyweights (dwt)</option><option value="oz">ounces (avoirdupois)</option><option value="gr">grains</option><option value="tola">tola</option></select></label>
+</div>
+<dl class="out" id="u-out"></dl>
+</section>
+
+<section id="purity" data-name="Purity" hidden>
+<h2>Karat, fineness and percent</h2>
+<p class="hint">Enter the purity in any form. The other two update, plus the pure gold in your piece.</p>
+<div class="grid">
+<label>Purity is given as<select id="p-type"><option value="k">Karat (k)</option><option value="f">Fineness (‰, e.g. 750)</option><option value="p">Percent (%)</option></select></label>
+<label>Value<input id="p-val" type="number" inputmode="decimal" value="18" step="any"></label>
+<label>Piece weight (g)<input id="p-w" type="number" inputmode="decimal" value="10" step="any"></label>
+</div>
+<dl class="out" id="p-out"></dl>
+<h2>Common marks</h2>
+<div class="scroll"><table><tr><th>Karat</th><th>Fineness</th><th>Gold %</th></tr>
+<tr><td>24k</td><td>999</td><td>99.9</td></tr><tr><td>22k</td><td>916</td><td>91.6</td></tr><tr><td>21k</td><td>875</td><td>87.5</td></tr><tr><td>18k</td><td>750</td><td>75.0</td></tr><tr><td>14k</td><td>585</td><td>58.5</td></tr><tr><td>10k</td><td>417</td><td>41.7</td></tr><tr><td>9k</td><td>375</td><td>37.5</td></tr><tr><td>8k</td><td>333</td><td>33.3</td></tr></table></div>
+</section>
+
+<section id="alloy" data-name="Alloy" hidden>
+<h2>Make a batch</h2>
+<p class="hint">How much source gold and alloy metal to melt for a target karat.</p>
+<div class="grid">
+<label>Target karat<input id="a-t" type="number" inputmode="decimal" value="18" step="any"></label>
+<label>Total weight (g)<input id="a-w" type="number" inputmode="decimal" value="50" step="any"></label>
+<label>Source gold karat<input id="a-s" type="number" inputmode="decimal" value="24" step="any"></label>
+</div>
+<dl class="out" id="a-out"></dl>
+<h2>Mix two golds</h2>
+<p class="hint">Melt two lots together and find the resulting karat.</p>
+<div class="grid">
+<label>Lot 1 weight (g)<input id="m-w1" type="number" inputmode="decimal" value="20" step="any"></label>
+<label>Lot 1 karat<input id="m-k1" type="number" inputmode="decimal" value="22" step="any"></label>
+<label>Lot 2 weight (g)<input id="m-w2" type="number" inputmode="decimal" value="30" step="any"></label>
+<label>Lot 2 karat<input id="m-k2" type="number" inputmode="decimal" value="14" step="any"></label>
+</div>
+<dl class="out" id="m-out"></dl>
+</section>
+
+<section id="melt" data-name="Melt" hidden>
+<h2>Melt lots into one alloy</h2>
+<p class="hint">Add every lot of melted gold with its weight and purity. Enter the purity you want, and see how much fine gold or alloy metal to add.</p>
+<div class="grid">
+<label>Purity entered as<select id="f-u"><option value="f" selected>Fineness (‰, e.g. 750)</option><option value="k">Karat (k)</option></select></label>
+<label>Target purity<input id="f-t" type="number" inputmode="decimal" value="750" step="any"></label>
+<label>Final weight wanted (g), optional<input id="f-wf" type="number" inputmode="decimal" step="any"></label>
+<label>Fine gold fineness (‰)<input id="f-g" type="number" inputmode="decimal" value="999" step="any"></label>
+<label>Alloy metal fineness (‰)<input id="f-a" type="number" inputmode="decimal" value="0" step="any"></label>
+</div>
+<div class="lots-h"><span>Weight (g)</span><span>Purity</span><span></span></div>
+<div id="f-lots"></div>
+<button type="button" id="f-add" class="btn">Add lot</button> <button type="button" id="f-clr" class="btn">Clear all</button>
+<p class="hint">Your lots are saved on this device.</p>
+<dl class="out" id="f-out"></dl>
+</section>
+
+<section id="color" data-name="Color" hidden>
+<h2>Gold colors</h2>
+<p class="hint">Pick a color to load its ratio, then change the ratios of the alloy part (everything except gold) to tune the shade. Ratios must add up to 100. These are typical starting recipes, so melt a small test first. Nickel can cause skin allergies.</p>
+<div class="grid">
+<label>Color<select id="k-c"><option>Yellow</option><option>Light yellow</option><option>Deep yellow</option><option>Rose</option><option>Red</option><option>Green (pale)</option><option>White (palladium)</option><option>White (nickel)</option><option>Custom</option></select></label>
+<label>Target fineness (‰)<input id="k-t" type="number" inputmode="decimal" value="750" step="any"></label>
+<label>Total weight (g)<input id="k-w" type="number" inputmode="decimal" value="10" step="any"></label>
+<label>Fine gold fineness (‰)<input id="k-g" type="number" inputmode="decimal" value="999" step="any"></label>
+<label>Silver (% of alloy part)<input id="k-ag" type="number" inputmode="decimal" value="50" step="any"></label>
+<label>Copper (% of alloy part)<input id="k-cu" type="number" inputmode="decimal" value="50" step="any"></label>
+<label>Zinc (% of alloy part)<input id="k-zn" type="number" inputmode="decimal" value="0" step="any"></label>
+<label>Palladium (% of alloy part)<input id="k-pd" type="number" inputmode="decimal" value="0" step="any"></label>
+<label>Nickel (% of alloy part)<input id="k-ni" type="number" inputmode="decimal" value="0" step="any"></label>
+</div>
+<dl class="out" id="k-out"></dl>
+</section>
+
+<section id="solder" data-name="Solder" hidden>
+<h2>Solder recipes</h2>
+<p class="hint">Gold recipes are cadmium-free and use a little indium. Medium is the average of hard and easy. Silver recipes are for sterling silver work. Melt a small test and check the flow before using it on a piece.</p>
+<div class="grid">
+<label>Solder type<select id="sl-t"><option value="Gold 18k">Gold solder 18k</option><option value="Gold 14k">Gold solder 14k</option><option value="Gold 10k">Gold solder 10k</option><option value="Silver">Silver solder</option></select></label>
+<label>Grade<select id="sl-g"><option value="Hard">Hard</option><option value="Medium" selected>Medium</option><option value="Easy">Easy</option></select></label>
+<label>Solder weight to make (g)<input id="sl-w" type="number" inputmode="decimal" value="5" step="any"></label>
+</div>
+<dl class="out" id="sl-out"></dl>
+</section>
+
+<section id="chain" data-name="Chain" hidden>
+<h2>Bracelet length</h2>
+<p class="hint">Wrist circumference plus room for comfort.</p>
+<div class="grid">
+<label>Wrist circumference (cm)<input id="ch-wr" type="number" inputmode="decimal" value="16" step="any"></label>
+<label>Fit<select id="ch-fit"><option value="1.3">Snug</option><option value="2.5" selected>Comfortable</option><option value="3.8">Loose</option></select></label>
+</div>
+<dl class="out" id="ch-o1"></dl>
+<h2>Chain weight</h2>
+<p class="hint">Weigh a short sample of the chain to find the weight of any length, or of the same chain in another metal.</p>
+<div class="grid">
+<label>Sample length (cm)<input id="ch-sl" type="number" inputmode="decimal" value="10" step="any"></label>
+<label>Sample weight (g)<input id="ch-sw" type="number" inputmode="decimal" value="2" step="any"></label>
+<label>Wanted length (cm)<input id="ch-tl" type="number" inputmode="decimal" value="45" step="any"></label>
+<label>Sample metal<select id="ch-m1"><option value="10.36">Sterling silver</option><option value="11.6">10k yellow gold</option><option value="13.0" selected>14k yellow gold</option><option value="15.5">18k yellow gold</option><option value="19.32">24k gold</option><option value="21.45">Platinum</option></select></label>
+<label>Other metal<select id="ch-m2"><option value="10.36">Sterling silver</option><option value="11.6">10k yellow gold</option><option value="13.0">14k yellow gold</option><option value="15.5" selected>18k yellow gold</option><option value="19.32">24k gold</option><option value="21.45">Platinum</option></select></label>
+</div>
+<dl class="out" id="ch-o2"></dl>
+<h2>Typical necklace lengths</h2>
+<div class="scroll"><table><tr><th>Name</th><th>Length (cm)</th><th>Length (in)</th></tr>
+<tr><td>Choker</td><td>35–40</td><td>14–16</td></tr><tr><td>Princess</td><td>43–48</td><td>17–19</td></tr><tr><td>Matinee</td><td>50–60</td><td>20–24</td></tr><tr><td>Opera</td><td>70–90</td><td>28–36</td></tr></table></div>
+</section>
+
+<section id="price" data-name="Price" hidden>
+<h2>Piece price</h2>
+<p class="hint">Metal value including wastage, labor, stones, margin and tax. Use one currency throughout.</p>
+<div class="grid">
+<label>Piece weight (g)<input id="c-w" type="number" inputmode="decimal" value="10" step="any"></label>
+<label>Karat<input id="c-k" type="number" inputmode="decimal" value="18" step="any"></label>
+<label>24k gold price per gram<input id="c-p" type="number" inputmode="decimal" value="33772000" step="any"></label>
+<label>Wastage (%)<input id="c-ws" type="number" inputmode="decimal" value="5" step="any"></label>
+<label>Labor per gram<input id="c-l" type="number" inputmode="decimal" value="8" step="any"></label>
+<label>Stones total<input id="c-st" type="number" inputmode="decimal" value="0" step="any"></label>
+<label>Margin (%)<input id="c-m" type="number" inputmode="decimal" value="20" step="any"></label>
+<label>Tax (%)<input id="c-tx" type="number" inputmode="decimal" value="0" step="any"></label>
+</div>
+<dl class="out" id="c-out"></dl>
+</section>
+
+<section id="rings" data-name="Rings" hidden>
+<h2>Ring size converter</h2>
+<p class="hint">Pick the system you have. UK sizes are letters, for example N or N½.</p>
+<div class="grid">
+<label>Size system<select id="r-sys"><option value="us">US</option><option value="uk">UK</option><option value="eu">EU / ISO (circumference mm)</option><option value="d">Inner diameter (mm)</option></select></label>
+<label>Size<input id="r-val" type="text" inputmode="decimal" value="7"></label>
+</div>
+<dl class="out" id="r-out"></dl>
+</section>
+
+<section id="stones" data-name="Stones" hidden>
+<h2>Round diamond weight estimate</h2>
+<p class="hint">Rough carat weight from measurements. Leave depth empty to assume 60% of the diameter.</p>
+<div class="grid">
+<label>Diameter (mm)<input id="s-d" type="number" inputmode="decimal" value="6.5" step="any"></label>
+<label>Depth (mm)<input id="s-h" type="number" inputmode="decimal" step="any" placeholder="auto"></label>
+</div>
+<dl class="out" id="s-out"></dl>
+<h2>Carats to diameter</h2>
+<div class="grid"><label>Carat weight<input id="s-ct" type="number" inputmode="decimal" value="1" step="any"></label></div>
+<dl class="out" id="s2-out"></dl>
+<h2>Casting weight from wax</h2>
+<p class="hint">Approximate metal needed for a wax model. Add extra for the sprue and button.</p>
+<div class="grid">
+<label>Wax weight (g)<input id="x-w" type="number" inputmode="decimal" value="2" step="any"></label>
+<label>Metal<select id="x-m"><option value="10.4">Sterling silver</option><option value="11.4">10k yellow gold</option><option value="13.4" selected>14k yellow gold</option><option value="15.6">18k yellow gold</option><option value="21.5">Platinum</option></select></label>
+</div>
+<dl class="out" id="x-out"></dl>
+</section>
+
+<section id="wire" data-name="Wire" hidden>
+<h2>Length converter</h2>
+<div class="grid">
+<label>Length<input id="w-val" type="number" inputmode="decimal" value="45" step="any"></label>
+<label>Unit<select id="w-from"><option value="1">millimeters</option><option value="10" selected>centimeters</option><option value="25.4">inches</option></select></label>
+</div>
+<dl class="out" id="w-out"></dl>
+<h2>Wire gauge (B&amp;S / AWG)</h2>
+<div class="grid"><label>Gauge number<input id="g-n" type="number" inputmode="decimal" value="18" step="any"></label></div>
+<dl class="out" id="g-out"></dl>
+<h2>Wire weight</h2>
+<p class="hint">Round wire. Densities are typical and vary a little by alloy.</p>
+<div class="grid">
+<label>Diameter (mm)<input id="y-d" type="number" inputmode="decimal" value="1" step="any"></label>
+<label>Length (cm)<input id="y-l" type="number" inputmode="decimal" value="50" step="any"></label>
+<label>Metal<select id="y-m"><option value="10.36">Sterling silver</option><option value="10.49">Fine silver</option><option value="11.6">10k yellow gold</option><option value="13.0" selected>14k yellow gold</option><option value="15.5">18k yellow gold</option><option value="19.32">24k gold</option><option value="21.45">Platinum</option></select></label>
+</div>
+<dl class="out" id="y-out"></dl>
+</section>
+
+<section id="band" data-name="Band" hidden>
+<h2>Band length</h2>
+<p class="hint">Strip length needed to make a ring from flat or half-round stock. Measured on the centerline of the strip, so the inner size stays correct.</p>
+<div class="grid">
+<label>Size system<select id="b-sys"><option value="us">US</option><option value="uk">UK</option><option value="eu" selected>EU / ISO (circumference mm)</option><option value="d">Inner diameter (mm)</option></select></label>
+<label>Size<input id="b-val" type="text" inputmode="decimal" value="63"></label>
+<label>Thickness (mm)<input id="b-t" type="number" inputmode="decimal" value="2" step="any"></label>
+<label>Width (mm)<input id="b-w" type="number" inputmode="decimal" value="4" step="any"></label>
+<label>Extra for cutting and solder (mm)<input id="b-x" type="number" inputmode="decimal" value="0" step="any"></label>
+<label>Metal<select id="b-m"><option value="10.36">Sterling silver</option><option value="11.6">10k yellow gold</option><option value="13.0" selected>14k yellow gold</option><option value="15.5">18k yellow gold</option><option value="19.32">24k gold</option><option value="21.45">Platinum</option></select></label>
+</div>
+<dl class="out" id="b-out"></dl>
+<h2>Length table</h2>
+<p class="hint">Strip length in cm for EU / ISO sizes and strip thicknesses.</p>
+<div class="scroll"><table id="b-tab"></table></div>
+</section>
+<section id="roll" data-name="Rolling" hidden>
+<h2>Wire to strip</h2>
+<p class="hint">Rolling keeps the volume of metal the same. The wire whose cross-section equals the strip’s makes a strip of the same length, and a thicker wire makes a shorter piece. A good wire diameter lies between the strip thickness and width.</p>
+<div class="grid">
+<label>Strip width (mm)<input id="q-w" type="number" inputmode="decimal" value="4" step="any"></label>
+<label>Strip thickness (mm)<input id="q-t" type="number" inputmode="decimal" value="2" step="any"></label>
+<label>Strip length (cm)<input id="q-l" type="number" inputmode="decimal" value="6.93" step="any"></label>
+<label>Loss in rolling and filing (%)<input id="q-a" type="number" inputmode="decimal" value="0" step="any"></label>
+<label>Wire diameter you have (mm)<input id="q-d" type="number" inputmode="decimal" value="3" step="any"></label>
+<label>Metal<select id="q-m"><option value="10.36">Sterling silver</option><option value="11.6">10k yellow gold</option><option value="13.0" selected>14k yellow gold</option><option value="15.5">18k yellow gold</option><option value="19.32">24k gold</option><option value="21.45">Platinum</option></select></label>
+</div>
+<dl class="out" id="q-out"></dl>
+</section>
+</main>
+<footer>Estimates for stones, casting and wire are guides. Check critical jobs on a scale.</footer>
+
+<script>
+var $=function(i){return document.getElementById(i)},v=function(i){return parseFloat($(i).value)};
+var f=function(x,d){d=d==null?3:d;return isFinite(x)?String(+x.toFixed(d)):'–'};
+var out=function(i,rows){$(i).innerHTML=rows.map(function(r){return '<div><dt>'+t(r[0])+'</dt><dd>'+r[1]+'</dd></div>'}).join('')};
+var err=function(i,m){$(i).innerHTML='<div><dt class="err">'+t(m)+'</dt><dd></dd></div>'};
+var lang='en';try{lang=localStorage.getItem('gb-lang')||'en'}catch(e){}
+var FA={'Goldsmith’s Bench':'میز کار زرگر','Every measure in one place. Type a number, read the result.':'همهٔ اندازه‌گیری‌ها در یک جا. عدد را وارد کنید، نتیجه را ببینید.',
+'Units':'واحدها','Purity':'عیار','Alloy':'آلیاژ','Price':'قیمت','Rings':'انگشتر','Stones':'سنگ','Wire':'سیم',
+'Weight converter':'تبدیل وزن','Enter a weight and pick its unit. All other units update.':'وزن را وارد کنید و واحد آن را انتخاب کنید. بقیهٔ واحدها خودکار به‌روز می‌شوند.','Weight':'وزن','Unit':'واحد',
+'grams (g)':'گرم (g)','kilograms':'کیلوگرم','carats (ct)':'قیراط (ct)','troy ounces':'انس تروی','pennyweights (dwt)':'پنی‌وایت (dwt)','ounces (avoirdupois)':'اونس (معمولی)','grains':'گرین','tola':'تولا',
+'Grams':'گرم','Kilograms':'کیلوگرم','Carats':'قیراط','Troy ounces':'انس تروی','Pennyweights':'پنی‌وایت','Ounces (avoirdupois)':'اونس (معمولی)','Grains':'گرین','Tola':'تولا',
+'Karat, fineness and percent':'عیار، خلوص و درصد','Enter the purity in any form. The other two update, plus the pure gold in your piece.':'خلوص را به هر شکلی وارد کنید. دو مورد دیگر و مقدار طلای خالص قطعه هم محاسبه می‌شود.',
+'Purity is given as':'خلوص به صورت','Karat (k)':'عیار (k)','Fineness (‰, e.g. 750)':'خلوص (‰، مثلاً 750)','Percent (%)':'درصد (%)','Value':'مقدار','Piece weight (g)':'وزن قطعه (گرم)',
+'Purity must be between 0 and 24k':'عیار باید بین 0 تا 24 باشد','Karat':'عیار','Fineness':'خلوص','Gold content':'میزان طلا','Pure gold in piece':'طلای خالص قطعه','Other metals':'فلزات دیگر',
+'Common marks':'مهرهای رایج','Gold %':'درصد طلا',
+'Make a batch':'ساخت یک ذوب','How much source gold and alloy metal to melt for a target karat.':'برای رسیدن به عیار هدف، چه مقدار طلای پایه و فلز آلیاژ باید ذوب کنید.',
+'Target karat':'عیار هدف','Total weight (g)':'وزن کل (گرم)','Source gold karat':'عیار طلای پایه','Enter all three values':'هر سه مقدار را وارد کنید','Source karat must be at least the target':'عیار طلای پایه باید حداقل برابر عیار هدف باشد',
+'Source gold to melt':'طلای پایه برای ذوب','Alloy metal to add':'فلز آلیاژ برای افزودن','Pure gold in batch':'طلای خالص در ذوب','Total batch':'وزن کل ذوب',
+'Mix two golds':'مخلوط دو طلا','Melt two lots together and find the resulting karat.':'دو مقدار طلا را با هم ذوب کنید و عیار نهایی را ببینید.',
+'Lot 1 weight (g)':'وزن طلای اول (گرم)','Lot 1 karat':'عیار طلای اول','Lot 2 weight (g)':'وزن طلای دوم (گرم)','Lot 2 karat':'عیار طلای دوم','Enter the lot weights':'وزن‌ها را وارد کنید',
+'Resulting karat':'عیار نهایی','Total weight':'وزن کل','Pure gold':'طلای خالص',
+'Piece price':'قیمت قطعه','Metal value including wastage, labor, stones, margin and tax. Use one currency throughout.':'ارزش فلز با احتساب ضایعات، دستمزد، سنگ، سود و مالیات. در همه‌جا از یک واحد پول استفاده کنید.',
+'24k gold price per gram':'قیمت هر گرم طلای 24 عیار','Wastage (%)':'ضایعات (%)','Labor per gram':'دستمزد هر گرم','Stones total':'جمع هزینهٔ سنگ‌ها','Margin (%)':'سود (%)','Tax (%)':'مالیات (%)',
+'Enter weight, karat and gold price':'وزن، عیار و قیمت طلا را وارد کنید','Final price':'قیمت نهایی','Metal incl. wastage':'فلز با ضایعات','Labor':'دستمزد','Cost':'بهای تمام‌شده','Profit':'سود','Tax':'مالیات','Pure gold used':'طلای خالص مصرفی',
+'Ring size converter':'تبدیل سایز انگشتر','Pick the system you have. UK sizes are letters, for example N or N½.':'سیستمی را که دارید انتخاب کنید. سایزهای بریتانیا حروف هستند، مثلاً N یا N½.',
+'Size system':'سیستم سایز','US':'آمریکا (US)','UK':'بریتانیا (UK)','EU / ISO (circumference mm)':'اروپا / ISO (محیط، میلی‌متر)','Inner diameter (mm)':'قطر داخلی (میلی‌متر)','Size':'سایز',
+'Enter a letter such as N or N½':'یک حرف مثل N یا N½ وارد کنید','Enter a size':'یک سایز وارد کنید','Size is outside the normal ring range':'سایز خارج از محدودهٔ معمول انگشتر است',
+'US size':'سایز آمریکا','UK size':'سایز بریتانیا','EU / ISO size':'سایز اروپا / ISO','Inner diameter':'قطر داخلی','Inner circumference':'محیط داخلی','out of range':'خارج از محدوده',
+'Round diamond weight estimate':'تخمین وزن الماس گرد','Rough carat weight from measurements. Leave depth empty to assume 60% of the diameter.':'وزن تقریبی قیراط از روی اندازه‌ها. اگر عمق را خالی بگذارید، 60٪ قطر در نظر گرفته می‌شود.',
+'Diameter (mm)':'قطر (میلی‌متر)','Depth (mm)':'عمق (میلی‌متر)','auto':'خودکار','Estimated weight':'وزن تخمینی','Depth used':'عمق استفاده‌شده','Enter a diameter':'قطر را وارد کنید',
+'Carats to diameter':'قیراط به قطر','Carat weight':'وزن (قیراط)','Approx. diameter':'قطر تقریبی','Enter a carat weight':'وزن قیراط را وارد کنید',
+'Casting weight from wax':'وزن ریخته‌گری از روی مدل موم','Approximate metal needed for a wax model. Add extra for the sprue and button.':'مقدار تقریبی فلز مورد نیاز برای مدل موم. برای راهگاه و دکمه مقداری اضافه کنید.',
+'Wax weight (g)':'وزن موم (گرم)','Metal':'فلز','Sterling silver':'نقرهٔ استرلینگ','10k yellow gold':'طلای زرد 10 عیار','14k yellow gold':'طلای زرد 14 عیار','18k yellow gold':'طلای زرد 18 عیار','Platinum':'پلاتین','Metal needed':'فلز مورد نیاز','Enter a wax weight':'وزن موم را وارد کنید',
+'Length converter':'تبدیل طول','Length':'طول','millimeters':'میلی‌متر','centimeters':'سانتی‌متر','inches':'اینچ','Millimeters':'میلی‌متر','Centimeters':'سانتی‌متر','Inches':'اینچ','Enter a length':'طول را وارد کنید',
+'Wire gauge (B&S / AWG)':'گیج سیم (B&S / AWG)','Gauge number':'شمارهٔ گیج','Diameter':'قطر','Enter a gauge from 0 to 40':'گیج را از 0 تا 40 وارد کنید',
+'Wire weight':'وزن سیم','Round wire. Densities are typical and vary a little by alloy.':'سیم گرد. چگالی‌ها مقادیر معمول هستند و بسته به آلیاژ کمی تفاوت دارند.','Length (cm)':'طول (سانتی‌متر)','Fine silver':'نقرهٔ خالص','24k gold':'طلای 24 عیار','Enter diameter and length':'قطر و طول را وارد کنید',
+'Estimates for stones, casting and wire are guides. Check critical jobs on a scale.':'تخمین‌های سنگ، ریخته‌گری و سیم فقط راهنما هستند. کارهای مهم را با ترازو بررسی کنید.'};
+Object.assign(FA,{'Band':'تسمه','Band length':'طول تسمه','Strip length needed to make a ring from flat or half-round stock. Measured on the centerline of the strip, so the inner size stays correct.':'طول تسمه‌ای که برای ساخت انگشتر از تسمهٔ تخت یا نیم‌گرد لازم است. روی خط مرکزی تسمه محاسبه شده تا سایز داخلی دقیق بماند.','Thickness (mm)':'ضخامت تسمه (میلی‌متر)','Width (mm)':'عرض تسمه (میلی‌متر)','Extra for cutting and solder (mm)':'اضافه برای برش و لحیم (میلی‌متر)','Length table':'جدول طول تسمه','Strip length in cm for EU / ISO sizes and strip thicknesses.':'طول تسمه بر حسب سانتی‌متر برای سایزهای اروپا / ISO و ضخامت‌های مختلف.','Strip length':'طول تسمه','In millimeters':'بر حسب میلی‌متر','Strip weight':'وزن تسمه','Enter a valid size and thickness':'سایز و ضخامت معتبر وارد کنید','EU':'اروپا (EU)'});
+function t(s){return lang==='fa'&&FA[s]?FA[s]:s}
+Object.assign(FA,{'Rolling':'نورد','Wire to strip':'مفتول به تسمه','Rolling keeps the volume of metal the same. The wire whose cross-section equals the strip’s makes a strip of the same length, and a thicker wire makes a shorter piece. A good wire diameter lies between the strip thickness and width.':'نورد حجم فلز را ثابت نگه می‌دارد. مفتولی که مساحت مقطعش با تسمه برابر باشد، تسمه‌ای با همان طول می‌سازد و مفتول ضخیم‌تر قطعه‌ای کوتاه‌تر می‌سازد. قطر مناسب مفتول بین ضخامت و عرض تسمه است.','Strip width (mm)':'عرض تسمه (میلی‌متر)','Strip thickness (mm)':'ضخامت تسمه (میلی‌متر)','Strip length (cm)':'طول تسمه (سانتی‌متر)','Loss in rolling and filing (%)':'ضایعات نورد و سوهان‌کاری (%)','Wire diameter you have (mm)':'قطر مفتولی که دارید (میلی‌متر)','Wire diameter (same length)':'قطر مفتول (برای طول برابر)','Usable wire range':'محدودهٔ قطر مناسب مفتول','Nearest gauge (B&S)':'نزدیک‌ترین گیج (B&S)','Wire length needed':'طول مفتول لازم','Check':'بررسی','Wire diameter is outside the usable range':'قطر مفتول خارج از محدودهٔ مناسب است','Enter width, thickness and strip length':'عرض، ضخامت و طول تسمه را وارد کنید'});
+function roll(){var w=v('q-w'),t0=v('q-t'),L=v('q-l'),a=v('q-a')||0,dh=v('q-d'),dens=parseFloat($('q-m').value);
+if(!(w>0&&t0>0&&L>0))return err('q-out','Enter width, thickness and strip length');
+var A=w*t0*(1+a/100),dm=2*Math.sqrt(A/Math.PI),g=Math.round(36-39*Math.log(dm/.127)/Math.log(92)),dg=.127*Math.pow(92,(36-g)/39);
+var rows=[['Wire diameter (same length)',f(dm,2)+' mm'],['Usable wire range',f(Math.min(t0,w),2)+' – '+f(Math.max(t0,w),2)+' mm'],['Nearest gauge (B&S)',g+' ('+f(dg,2)+' mm)'],['Strip weight',f(w*t0*L*10/1000*dens,2)+' g']];
+if(dh>0){rows.push(['Wire length needed',f(A*L/(Math.PI*dh*dh/4),1)+' cm']);if(dh<Math.min(t0,w)||dh>Math.max(t0,w))rows.push(['Check',t('Wire diameter is outside the usable range')])}
+out('q-out',rows)}
+Object.assign(FA,{'Melt':'ذوب','Melt lots into one alloy':'ذوب چند طلا در یک آلیاژ','Add every lot of melted gold with its weight and purity. Enter the purity you want, and see how much fine gold or alloy metal to add.':'همهٔ طلاهای آب‌شده را با وزن و عیارشان اضافه کنید. عیار مورد نظر را بدهید تا ببینید چقدر طلای خالص یا فلز آلیاژ باید اضافه کنید.','Purity entered as':'عیار به صورت','Target purity':'عیار هدف','Final weight wanted (g), optional':'وزن نهایی مورد نظر (گرم)، اختیاری','Fine gold fineness (‰)':'خلوص طلای خالص برای افزودن (‰)','Alloy metal fineness (‰)':'خلوص فلز آلیاژ (‰)','Weight (g)':'وزن (گرم)','Add lot':'افزودن طلا','Add at least one lot with weight and purity':'حداقل یک طلا با وزن و عیار اضافه کنید','Check the target and the purity of the added metals':'عیار هدف و خلوص فلزهای افزودنی را بررسی کنید','Wanted weight is less than the lots weigh':'وزن مورد نظر از وزن طلاهای موجود کمتر است','This weight cannot give that purity with these lots. Leave final weight empty to see the smallest addition':'با این وزن نمی‌شود به آن عیار رسید. وزن نهایی را خالی بگذارید تا کمترین مقدار افزودنی را ببینید','Add fine gold':'طلای خالص برای افزودن','Add alloy metal':'فلز آلیاژ برای افزودن','Already at target purity':'عیار همین حالا برابر هدف است','Final weight':'وزن نهایی','Final fineness':'خلوص نهایی','Fineness of the lots now':'خلوص طلاهای موجود','Weight of the lots':'وزن طلاهای موجود','Pure gold in the lots':'طلای خالص در طلاهای موجود'});
+function addLot(w,p){var d=document.createElement('div');d.className='lot';d.innerHTML='<input type="number" inputmode="decimal" step="any" aria-label="Weight (g)"><input type="number" inputmode="decimal" step="any" aria-label="Purity"><button type="button" aria-label="Remove">×</button>';d.children[0].value=w;d.children[1].value=p;d.children[2].onclick=function(){d.remove();all()};$('f-lots').appendChild(d)}
+function melt(){saveLots();var k=$('f-u').value==='k',cv=function(z){return k?z/24:z/1000};
+var T=cv(v('f-t')),wf=v('f-wf'),G=(v('f-g')||999)/1000,A=(v('f-a')||0)/1000,W=0,P=0,n=0,x=0,y=0,Wn;
+[].forEach.call($('f-lots').children,function(r){var w=parseFloat(r.children[0].value),q=cv(parseFloat(r.children[1].value));if(w>0&&q>=0&&q<=1.001){W+=w;P+=w*q;n++}});
+if(!n)return err('f-out','Add at least one lot with weight and purity');
+if(!(T>0&&T<=1)||!(G>T)||!(A<T))return err('f-out','Check the target and the purity of the added metals');
+var F=P/W,rows=[];
+if(wf>0){if(wf<W-1e-9)return err('f-out','Wanted weight is less than the lots weigh');
+x=(T*wf-P-A*(wf-W))/(G-A);y=wf-W-x;
+if(x<-1e-9||y<-1e-9)return err('f-out','This weight cannot give that purity with these lots. Leave final weight empty to see the smallest addition');
+x=Math.max(x,0);y=Math.max(y,0);Wn=wf;rows.push(['Add fine gold',f(x,2)+' g'],['Add alloy metal',f(y,2)+' g'])}
+else if(F<T-1e-9){x=(T*W-P)/(G-T);Wn=W+x;rows.push(['Add fine gold',f(x,2)+' g'])}
+else if(F>T+1e-9){y=(P-T*W)/(T-A);Wn=W+y;rows.push(['Add alloy metal',f(y,2)+' g'])}
+else{Wn=W;rows.push(['Already at target purity','–'])}
+rows.push(['Final weight',f(Wn,2)+' g'],['Final fineness',f(T*1000,1)+' ‰ ('+f(T*24,2)+'k)'],['Fineness of the lots now',f(F*1000,1)+' ‰ ('+f(F*24,2)+'k)'],['Weight of the lots',f(W,2)+' g'],['Pure gold in the lots',f(P,2)+' g']);
+out('f-out',rows)}
+$('f-add').onclick=function(){addLot('','');all()};
+var sv=null;try{sv=JSON.parse(localStorage.getItem('gb-lots'))}catch(e){}
+if(sv&&Array.isArray(sv.l)){sv.l.forEach(function(p){addLot(p[0],p[1])});if(sv.t)$('f-t').value=sv.t;if(sv.u)$('f-u').value=sv.u}else{addLot(20,900);addLot(15,585);addLot(10,750)}
+$('f-clr').onclick=function(){$('f-lots').innerHTML='';all()};
+Object.assign(FA,{'Color':'رنگ','Gold colors':'رنگ‌های طلا','Pick a color to load its ratio, then change the ratios of the alloy part (everything except gold) to tune the shade. Ratios must add up to 100. These are typical starting recipes, so melt a small test first. Nickel can cause skin allergies.':'یک رنگ را انتخاب کنید تا نسبت‌هایش بیاید، سپس نسبت فلزهای بخش آلیاژ (همه به‌جز طلا) را برای تنظیم رنگ تغییر دهید. مجموع نسبت‌ها باید 100 باشد. اینها فرمول‌های معمولِ شروع هستند، پس اول یک نمونهٔ کوچک ذوب کنید. نیکل ممکن است حساسیت پوستی ایجاد کند.','Yellow':'زرد','Light yellow':'زرد روشن','Deep yellow':'زرد پررنگ','Rose':'رزگلد','Red':'قرمز','Green (pale)':'سبز (کم‌رنگ)','White (palladium)':'سفید (پالادیوم)','White (nickel)':'سفید (نیکل)','Target fineness (‰)':'عیار هدف (‰)','Fine gold':'طلای خالص','Silver':'نقره','Copper':'مس','Palladium':'پالادیوم','Nickel':'نیکل','Zinc':'روی','Total':'مجموع','White needs 18k or lower purity':'برای رنگ سفید عیار 18 یا کمتر لازم است','Color will be pale at this purity':'در این عیار رنگ کم‌رنگ می‌شود','Check the target purity, fine gold purity and weight':'عیار هدف، خلوص طلای خالص و وزن را بررسی کنید'});
+var CR={'Yellow':{Ag:50,Cu:50},'Light yellow':{Ag:65,Cu:35},'Deep yellow':{Ag:30,Cu:70},'Rose':{Ag:10,Cu:90},'Red':{Cu:100},'Green (pale)':{Ag:100},'White (palladium)':{Pd:60,Ag:36,Zn:4},'White (nickel)':{Ni:48,Cu:40,Zn:12}};
+var MN={Ag:'Silver',Cu:'Copper',Pd:'Palladium',Ni:'Nickel',Zn:'Zinc'};
+function colr(){var T=v('k-t')/1000,W=v('k-w'),G=(v('k-g')||999)/1000,r={Ag:v('k-ag')||0,Cu:v('k-cu')||0,Zn:v('k-zn')||0,Pd:v('k-pd')||0,Ni:v('k-ni')||0},sm=r.Ag+r.Cu+r.Zn+r.Pd+r.Ni,white=r.Pd+r.Ni>0;
+if(!(T>0&&T<G&&W>0))return err('k-out','Check the target purity, fine gold purity and weight');
+if(Math.abs(sm-100)>.01)return out('k-out',[['Ratios must add up to 100',f(sm,2)]]);
+var au=W*T/G,rest=W-au,rows=[['Fine gold',f(au,2)+' g']];
+Object.keys(r).forEach(function(m){if(r[m]>0)rows.push([MN[m],f(rest*r[m]/100,2)+' g ('+f(r[m],1)+'%)'])});
+rows.push(['Total',f(W,2)+' g'],['Final fineness',f(T*1000,1)+' ‰ ('+f(T*24,2)+'k)']);
+if(white&&T>.8)rows.push(['Check',t('White needs 18k or lower purity')]);else if(!white&&T>.92)rows.push(['Check',t('Color will be pale at this purity')]);
+out('k-out',rows)}
+Object.assign(FA,{'Solder':'لحیم','Solder recipes':'ترکیب لحیم','Gold recipes are cadmium-free and use a little indium. Medium is the average of hard and easy. Silver recipes are for sterling silver work. Melt a small test and check the flow before using it on a piece.':'ترکیب‌های طلا بدون کادمیوم هستند و کمی ایندیم دارند. «متوسط» میانگین سخت و نرم است. ترکیب‌های نقره برای کار با نقرهٔ عیار 925 هستند. قبل از استفاده روی قطعه، یک نمونهٔ کوچک ذوب کنید و روان‌شدن آن را بررسی کنید.','Solder type':'نوع لحیم','Gold solder 18k':'لحیم طلا 18 عیار','Gold solder 14k':'لحیم طلا 14 عیار','Gold solder 10k':'لحیم طلا 10 عیار','Silver solder':'لحیم نقره','Grade':'درجه','Hard':'سخت','Medium':'متوسط','Easy':'نرم (زودذوب)','Solder weight to make (g)':'وزن لحیم برای ساخت (گرم)','Gold':'طلا','Indium':'ایندیم','Enter the solder weight':'وزن لحیم را وارد کنید'});
+var SD={'Gold 18k':{Hard:{Au:75,Cu:10,Ag:6,Zn:6.5,Ni:.5,In:2},Easy:{Au:75,Cu:6,Ag:10,Zn:6.5,Ni:.5,In:2}},'Gold 14k':{Hard:{Au:58,Cu:27,Ag:5,Zn:7.5,Ni:.5,In:2},Easy:{Au:58,Cu:29,Ag:0,Zn:10.5,Ni:.5,In:2}},'Gold 10k':{Hard:{Au:42,Cu:40,Ag:0,Zn:15.5,Ni:.5,In:2},Easy:{Au:42,Cu:30,Ag:16.5,Zn:9,Ni:.5,In:2}},'Silver':{Hard:{Ag:75,Cu:22,Zn:3},Medium:{Ag:70,Cu:20,Zn:10},Easy:{Ag:65,Cu:20,Zn:15}}};
+var SN={Au:'Gold',Ag:'Silver',Cu:'Copper',Zn:'Zinc',Ni:'Nickel',In:'Indium'};
+function solder(){var d=SD[$('sl-t').value],gr=$('sl-g').value,W=v('sl-w'),r;
+if(!(W>0))return err('sl-out','Enter the solder weight');
+if(gr==='Medium'&&!d.Medium){r={};Object.keys(d.Hard).forEach(function(m){r[m]=(d.Hard[m]+d.Easy[m])/2})}else r=d[gr];
+var rows=[];['Au','Ag','Cu','Zn','Ni','In'].forEach(function(m){if(r[m]>0)rows.push([SN[m],f(W*r[m]/100,2)+' g ('+f(r[m],2)+'%)'])});
+rows.push(['Total',f(W,2)+' g']);out('sl-out',rows)}
+Object.assign(FA,{'Custom':'دلخواه','Silver (% of alloy part)':'نقره (% از بخش آلیاژ)','Copper (% of alloy part)':'مس (% از بخش آلیاژ)','Zinc (% of alloy part)':'روی (% از بخش آلیاژ)','Palladium (% of alloy part)':'پالادیوم (% از بخش آلیاژ)','Nickel (% of alloy part)':'نیکل (% از بخش آلیاژ)','Ratios must add up to 100':'مجموع نسبت‌ها باید 100 باشد'});
+var KM=['Ag','Cu','Zn','Pd','Ni'];
+$('k-c').addEventListener('change',function(){var r=CR[this.value];if(r)KM.forEach(function(m){$('k-'+m.toLowerCase()).value=r[m]||0})});
+KM.forEach(function(m){$('k-'+m.toLowerCase()).addEventListener('input',function(){$('k-c').value='Custom'})});
+Object.assign(FA,{'Chain':'زنجیر','Bracelet length':'طول دستبند','Wrist circumference plus room for comfort.':'دور مچ به‌اضافهٔ فاصله برای راحتی.','Wrist circumference (cm)':'دور مچ (سانتی‌متر)','Fit':'میزان راحتی','Snug':'تنگ','Comfortable':'معمولی','Loose':'گشاد','In inches':'بر حساب اینچ','Chain weight':'وزن زنجیر','Weigh a short sample of the chain to find the weight of any length, or of the same chain in another metal.':'یک تکهٔ کوتاه از زنجیر را وزن کنید تا وزن هر طول دیگر یا همان زنجیر در فلز دیگر را ببینید.','Sample length (cm)':'طول نمونه (سانتی‌متر)','Sample weight (g)':'وزن نمونه (گرم)','Wanted length (cm)':'طول مورد نظر (سانتی‌متر)','Sample metal':'فلز نمونه','Other metal':'فلز دیگر','Weight per cm':'وزن هر سانتی‌متر','Weight of wanted length':'وزن طول مورد نظر','Same chain in other metal':'همان زنجیر در فلز دیگر','Enter the wrist size':'دور مچ را وارد کنید','Enter sample length, sample weight and wanted length':'طول و وزن نمونه و طول مورد نظر را وارد کنید','Typical necklace lengths':'طول‌های معمول گردنبند','Name':'نام','Length (in)':'طول (اینچ)','Choker':'گردنی (چوکر)','Princess':'پرنسس','Matinee':'ماتینی','Opera':'اپرا','Clear all':'پاک‌کردن همه','Your lots are saved on this device.':'طلاهای واردشده روی همین دستگاه ذخیره می‌شوند.'});
+function saveLots(){try{localStorage.setItem('gb-lots',JSON.stringify({l:[].map.call($('f-lots').children,function(r){return [r.children[0].value,r.children[1].value]}),t:$('f-t').value,u:$('f-u').value}))}catch(e){}}
+function chain(){var wr=v('ch-wr'),ft=parseFloat($('ch-fit').value);
+if(wr>0){var L=wr+ft;out('ch-o1',[['Bracelet length',f(L,1)+' cm'],['In inches',f(L/2.54,2)+' in']])}else err('ch-o1','Enter the wrist size');
+var sl=v('ch-sl'),sw=v('ch-sw'),tl=v('ch-tl');
+if(sl>0&&sw>0&&tl>0){var pc=sw/sl,d1=parseFloat($('ch-m1').value),d2=parseFloat($('ch-m2').value);out('ch-o2',[['Weight of wanted length',f(pc*tl,2)+' g'],['Weight per cm',f(pc,3)+' g'],['Same chain in other metal',f(pc*tl*d2/d1,2)+' g']])}else err('ch-o2','Enter sample length, sample weight and wanted length')}
+var THS=[1,1.5,2,2.5,3,3.5,4];
+function bandTable(){var T=$('b-tab');if(T.rows.length)return;var H='<tr><th>EU</th><th>US</th>'+THS.map(function(q){return '<th>'+q+' mm</th>'}).join('')+'</tr>';for(var z=40;z<=75;z++){H+='<tr><td>'+z+'</td><td>'+f((z/Math.PI-11.63)/.8128,2)+'</td>'+THS.map(function(q){return '<td>'+f((z+Math.PI*q)/10,2)+'</td>'}).join('')+'</tr>'}T.innerHTML=H}
+function band(){var s=$('b-sys').value,tx=$('b-val').value.trim(),d,th=v('b-t'),wd=v('b-w'),ex=v('b-x')||0,bad='Enter a valid size and thickness';
+if(s==='uk'){var m=tx.toUpperCase().match(/^([A-Z])\s*(½|\.5|1\/2)?/);if(!m)return err('b-out',bad);d=(37.8+1.25*(m[1].charCodeAt(0)-65+(m[2]?.5:0)))/Math.PI}
+else{var x=parseFloat(tx);d=s==='us'?11.63+.8128*x:s==='eu'?x/Math.PI:x}
+if(!(d>10&&d<30&&th>0))return err('b-out',bad);
+var L=Math.PI*(d+th)+ex,rows=[['Strip length',f(L/10,2)+' cm'],['In millimeters',f(L,1)+' mm'],['Inner diameter',f(d,2)+' mm'],['EU / ISO size',f(d*Math.PI,1)]];
+if(wd>0)rows.push(['Strip weight',f(wd*th*L/1000*parseFloat($('b-m').value),2)+' g']);out('b-out',rows)}
+$('b-sys').addEventListener('change',function(){var e={us:'7',uk:'N',eu:'63',d:'20'};$('b-val').value=e[this.value];all()});
+var U={g:1,kg:1000,ct:.2,ozt:31.1034768,dwt:1.55517384,oz:28.349523125,gr:.06479891,tola:11.6638038};
+var UN={g:'Grams',kg:'Kilograms',ct:'Carats',ozt:'Troy ounces',dwt:'Pennyweights',oz:'Ounces (avoirdupois)',gr:'Grains',tola:'Tola'};
+
+function units(){var g=v('u-val')*U[$('u-from').value];out('u-out',Object.keys(U).map(function(k){return [UN[k],f(g/U[k],4)]}))}
+
+function purity(){var t=$('p-type').value,x=v('p-val'),w=v('p-w');
+var k=t==='k'?x:t==='f'?x/1000*24:x/100*24;
+if(!(k>=0&&k<=24.01))return err('p-out','Purity must be between 0 and 24k');
+var rows=[['Karat',f(k,2)+'k'],['Fineness',f(k/24*1000,1)+' ‰'],['Gold content',f(k/24*100,2)+' %']];
+if(w>=0){rows.push(['Pure gold in piece',f(w*k/24)+' g'],['Other metals',f(w*(1-k/24))+' g'])}
+out('p-out',rows)}
+
+function alloy(){var T=v('a-t'),W=v('a-w'),S=v('a-s');
+if(!(T>0&&W>0&&S>0))return err('a-out','Enter all three values');
+if(S<T)return err('a-out','Source karat must be at least the target');
+var pure=W*T/24,src=pure/(S/24);
+out('a-out',[['Source gold to melt',f(src)+' g'],['Alloy metal to add',f(W-src)+' g'],['Pure gold in batch',f(pure)+' g'],['Total batch',f(W)+' g']]);
+var w1=v('m-w1'),k1=v('m-k1'),w2=v('m-w2'),k2=v('m-k2'),tot=w1+w2;
+if(!(tot>0))return err('m-out','Enter the lot weights');
+var p=(w1*k1+w2*k2)/24;
+out('m-out',[['Resulting karat',f(p/tot*24,2)+'k'],['Fineness',f(p/tot*1000,1)+' ‰'],['Total weight',f(tot)+' g'],['Pure gold',f(p)+' g']])}
+
+function price(){var w=v('c-w'),k=v('c-k'),p=v('c-p'),ws=v('c-ws')||0,l=v('c-l')||0,st=v('c-st')||0,m=v('c-m')||0,tx=v('c-tx')||0;
+if(!(w>0&&k>0&&p>=0))return err('c-out','Enter weight, karat and gold price');
+var metal=w*(1+ws/100)*k/24*p,labor=w*l,cost=metal+labor+st,sell=cost*(1+m/100),tax=sell*tx/100;
+out('c-out',[['Final price',f(sell+tax,2)],['Metal incl. wastage',f(metal,2)],['Labor',f(labor,2)],['Stones',f(st,2)],['Cost',f(cost,2)],['Profit',f(sell-cost,2)],['Tax',f(tax,2)],['Pure gold used',f(w*(1+ws/100)*k/24)+' g']])}
+
+function ring(){var s=$('r-sys').value,t=$('r-val').value.trim(),d;
+if(s==='uk'){var m=t.toUpperCase().match(/^([A-Z])\s*(½|\.5|1\/2)?/);if(!m)return err('r-out','Enter a letter such as N or N½');d=(37.8+1.25*(m[1].charCodeAt(0)-65+(m[2]?.5:0)))/Math.PI}
+else{var x=parseFloat(t);if(!(x>=0))return err('r-out','Enter a size');d=s==='us'?11.63+.8128*x:s==='eu'?x/Math.PI:x}
+if(!(d>10&&d<30))return err('r-out','Size is outside the normal ring range');
+var c=d*Math.PI,us=Math.round((d-11.63)/.8128*4)/4,i=Math.round((c-37.8)/1.25*2)/2,uk=(i<0||i>25.5)?t('out of range'):String.fromCharCode(65+Math.floor(i))+(i%1?' ½':'');
+out('r-out',[['US size',f(us,2)],['UK size',uk],['EU / ISO size',f(c,1)],['Inner diameter',f(d,2)+' mm'],['Inner circumference',f(c,2)+' mm']])}
+
+function stones(){var d=v('s-d'),h=v('s-h');
+if(d>0){var hh=h>0?h:.6*d;out('s-out',[['Estimated weight',f(d*d*hh*.0061,2)+' ct'],['Depth used',f(hh,2)+' mm']])}else err('s-out','Enter a diameter');
+var c=v('s-ct');
+if(c>0)out('s2-out',[['Approx. diameter',f(Math.cbrt(c/(.0061*.6)),2)+' mm']]);else err('s2-out','Enter a carat weight');
+var w=v('x-w');
+if(w>0)out('x-out',[['Metal needed',f(w*parseFloat($('x-m').value),2)+' g']]);else err('x-out','Enter a wax weight')}
+
+function wire(){var a=v('w-val'),fm=parseFloat($('w-from').value);
+if(a>=0){var mm=a*fm;out('w-out',[['Millimeters',f(mm,2)],['Centimeters',f(mm/10,2)],['Inches',f(mm/25.4,3)]])}else err('w-out','Enter a length');
+var n=v('g-n');
+if(n>=0&&n<=40){var d=.127*Math.pow(92,(36-n)/39);out('g-out',[['Diameter',f(d,3)+' mm'],['Diameter',f(d/25.4,4)+' in']])}else err('g-out','Enter a gauge from 0 to 40');
+var dm=v('y-d'),l=v('y-l');
+if(dm>0&&l>0)out('y-out',[['Weight',f(Math.PI*Math.pow(dm/20,2)*l*parseFloat($('y-m').value),2)+' g']]);else err('y-out','Enter diameter and length')}
+
+function all(){[units,purity,alloy,melt,colr,solder,chain,price,ring,stones,wire,band,roll].forEach(function(fn){try{fn()}catch(e){}})}
+
+var secs=[].slice.call(document.querySelectorAll('section')),tabs=$('tabs');
+function show(id){secs.forEach(function(s){s.hidden=s.id!==id});[].forEach.call(tabs.children,function(b){b.setAttribute('aria-selected',b.dataset.id===id)})}
+secs.forEach(function(s){var b=document.createElement('button');b.type='button';b.role='tab';b.textContent=s.dataset.name;b.dataset.id=s.id;b.onclick=function(){show(s.id);window.scrollTo(0,0)};tabs.appendChild(b)});
+document.addEventListener('input',all);document.addEventListener('change',all);
+$('r-sys').addEventListener('change',function(){var ex={us:'7',uk:'N',eu:'54',d:'17.3'};$('r-val').value=ex[this.value];all()});
+var orig=new WeakMap();
+function applyLang(){bandTable();var fa=lang==='fa';document.documentElement.lang=fa?'fa':'en';document.documentElement.dir=fa?'rtl':'ltr';
+var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n,list=[];while(n=w.nextNode())list.push(n);
+list.forEach(function(n){var el=n.parentNode;if(!n.nodeValue.trim()||el.closest('script,#lang,.out'))return;if(!orig.has(n))orig.set(n,n.nodeValue);var o=orig.get(n),k=o.trim();if(FA[k])n.nodeValue=fa?o.replace(k,FA[k]):o});
+$('s-h').placeholder=t('auto');document.title=t('Goldsmith’s Bench');$('lang').textContent=fa?'English':'فارسی';all()}
+var thm='dark';try{thm=localStorage.getItem('gb-theme')||'dark'}catch(e){}
+function setTheme(x){thm=x;document.documentElement.setAttribute('data-theme',x);$('theme').textContent=x==='dark'?'☀️':'🌙';try{localStorage.setItem('gb-theme',x)}catch(e){}}
+$('theme').onclick=function(){setTheme(thm==='dark'?'light':'dark')};setTheme(thm);
+$('lang').onclick=function(){lang=lang==='fa'?'en':'fa';try{localStorage.setItem('gb-lang',lang)}catch(e){}applyLang()};
+var h=(location.hash||'').slice(1);show(secs.some(function(s){return s.id===h})?h:'units');applyLang();
+</script>
+<script>if("serviceWorker" in navigator)addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})</script>
+</body>
+</html>
