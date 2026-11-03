@@ -465,6 +465,6 @@ $('theme').onclick=function(){setTheme(thm==='dark'?'light':'dark')};setTheme(th
 $('lang').onclick=function(){lang=lang==='fa'?'en':'fa';try{localStorage.setItem('gb-lang',lang)}catch(e){}applyLang()};
 var h=(location.hash||'').slice(1);show(secs.some(function(s){return s.id===h})?h:'units');applyLang();
 </script>
-<script>if("serviceWorker" in navigator)addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})</script>
+<script>if("serviceWorker" in navigator)addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})</script><script src="extra.js"></script><script src="extra.js"></script>
 </body>
 </html>
