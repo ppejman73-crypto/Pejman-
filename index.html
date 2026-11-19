@@ -106,6 +106,25 @@ td,th{border-bottom-color:var(--glb)}
 <h2>Common marks</h2>
 <div class="scroll"><table><tr><th>Karat</th><th>Fineness</th><th>Gold %</th></tr>
 <tr><td>24k</td><td>999</td><td>99.9</td></tr><tr><td>22k</td><td>916</td><td>91.6</td></tr><tr><td>21k</td><td>875</td><td>87.5</td></tr><tr><td>18k</td><td>750</td><td>75.0</td></tr><tr><td>14k</td><td>585</td><td>58.5</td></tr><tr><td>10k</td><td>417</td><td>41.7</td></tr><tr><td>9k</td><td>375</td><td>37.5</td></tr><tr><td>8k</td><td>333</td><td>33.3</td></tr></table></div>
+<h2>Raise purity</h2>
+<p class="hint">Add purer metal (e.g. 999 silver) to raise the fineness.</p>
+<div class="grid">
+<label>Weight you have (g)<input id="rp-w" type="number" inputmode="decimal" value="100" step="any"></label>
+<label>Current fineness (‰)<input id="rp-c" type="number" inputmode="decimal" value="750" step="any"></label>
+<label>Target fineness (‰)<input id="rp-t" type="number" inputmode="decimal" value="925" step="any"></label>
+<label>Added metal fineness (‰)<input id="rp-a" type="number" inputmode="decimal" value="999" step="any"></label>
+</div>
+<dl class="out" id="rp-out"></dl>
+
+<h2>Lower purity</h2>
+<p class="hint">Add a less pure metal (e.g. copper, fineness 0) to lower the fineness.</p>
+<div class="grid">
+<label>Weight you have (g)<input id="lp-w" type="number" inputmode="decimal" value="100" step="any"></label>
+<label>Current fineness (‰)<input id="lp-c" type="number" inputmode="decimal" value="925" step="any"></label>
+<label>Target fineness (‰)<input id="lp-t" type="number" inputmode="decimal" value="800" step="any"></label>
+<label>Added metal fineness (‰)<input id="lp-a" type="number" inputmode="decimal" value="0" step="any"></label>
+</div>
+<dl class="out" id="lp-out"></dl>
 </section>
 
 <section id="alloy" data-name="Alloy" hidden>
@@ -300,7 +319,8 @@ var f=function(x,d){d=d==null?3:d;return isFinite(x)?String(+x.toFixed(d)):'–'
 var out=function(i,rows){$(i).innerHTML=rows.map(function(r){return '<div><dt>'+t(r[0])+'</dt><dd>'+r[1]+'</dd></div>'}).join('')};
 var err=function(i,m){$(i).innerHTML='<div><dt class="err">'+t(m)+'</dt><dd></dd></div>'};
 var lang='en';try{lang=localStorage.getItem('gb-lang')||'en'}catch(e){}
-var FA={'Goldsmith’s Bench':'میز کار زرگر','Every measure in one place. Type a number, read the result.':'همهٔ اندازه‌گیری‌ها در یک جا. عدد را وارد کنید، نتیجه را ببینید.',
+var FA={'Goldsmith’s Bench':'میز کار زرگر',Object.assign(FA,{'Raise purity':'بالا بردن عیار','Lower purity':'پایین آوردن عیار','Add purer metal (e.g. 999 silver) to raise the fineness.':'فلز خالص‌تر (مثلاً نقرهٔ 999) اضافه کنید تا عیار بالا برود.','Add a less pure metal (e.g. copper, fineness 0) to lower the fineness.':'فلز کم‌عیارتر (مثلاً مس، خلوص 0) اضافه کنید تا عیار پایین بیاید.','Weight you have (g)':'وزن موجود (گرم)','Current fineness (‰)':'عیار فعلی (‰)','Target fineness (‰)':'عیار هدف (‰)','Added metal fineness (‰)':'عیار فلز افزودنی (‰)','Add metal':'فلز لازم برای افزودن','Enter all values':'همهٔ مقدارها را وارد کنید','Target must be higher than current':'عیار هدف باید بیشتر از عیار فعلی باشد','Target must be lower than current':'عیار هدف باید کمتر از عیار فعلی باشد','Added metal must be purer than the target':'فلز افزودنی باید عیارش از عیار هدف بیشتر باشد','Added metal must be less pure than the target':'فلز افزودنی باید عیارش از عیار هدف کمتر باشد'});
+'Every measure in one place. Type a number, read the result.':'همهٔ اندازه‌گیری‌ها در یک جا. عدد را وارد کنید، نتیجه را ببینید.',
 'Units':'واحدها','Purity':'عیار','Alloy':'آلیاژ','Price':'قیمت','Rings':'انگشتر','Stones':'سنگ','Wire':'سیم',
 'Weight converter':'تبدیل وزن','Enter a weight and pick its unit. All other units update.':'وزن را وارد کنید و واحد آن را انتخاب کنید. بقیهٔ واحدها خودکار به‌روز می‌شوند.','Weight':'وزن','Unit':'واحد',
 'grams (g)':'گرم (g)','kilograms':'کیلوگرم','carats (ct)':'قیراط (ct)','troy ounces':'انس تروی','pennyweights (dwt)':'پنی‌وایت (dwt)','ounces (avoirdupois)':'اونس (معمولی)','grains':'گرین','tola':'تولا',
@@ -421,6 +441,18 @@ if(!(tot>0))return err('m-out','Enter the lot weights');
 var p=(w1*k1+w2*k2)/24;
 out('m-out',[['Resulting karat',f(p/tot*24,2)+'k'],['Fineness',f(p/tot*1000,1)+' ‰'],['Total weight',f(tot)+' g'],['Pure gold',f(p)+' g']])}
 
+function raisePur(){var M=v('rp-w'),c=v('rp-c'),t0=v('rp-t'),a=v('rp-a');
+if(!(M>0&&c>=0&&t0>0&&a>0))return err('rp-out','Enter all values');
+if(t0<=c)return err('rp-out','Target must be higher than current');
+if(a<=t0)return err('rp-out','Added metal must be purer than the target');
+var x=M*(t0-c)/(a-t0);
+out('rp-out',[['Add metal',f(x,2)+' g'],['Final weight',f(M+x,2)+' g'],['Final fineness',f(t0,1)+' ‰']])}
+function lowerPur(){var M=v('lp-w'),c=v('lp-c'),t0=v('lp-t'),a=v('lp-a')||0;
+if(!(M>0&&c>0&&t0>=0))return err('lp-out','Enter all values');
+if(t0>=c)return err('lp-out','Target must be lower than current');
+if(a>=t0)return err('lp-out','Added metal must be less pure than the target');
+var x=M*(c-t0)/(t0-a);
+out('lp-out',[['Add metal',f(x,2)+' g'],['Final weight',f(M+x,2)+' g'],['Final fineness',f(t0,1)+' ‰']])}
 function price(){var w=v('c-w'),k=v('c-k'),p=v('c-p'),ws=v('c-ws')||0,l=v('c-l')||0,st=v('c-st')||0,m=v('c-m')||0,tx=v('c-tx')||0;
 if(!(w>0&&k>0&&p>=0))return err('c-out','Enter weight, karat and gold price');
 var metal=w*(1+ws/100)*k/24*p,labor=w*l,cost=metal+labor+st,sell=cost*(1+m/100),tax=sell*tx/100;
@@ -447,7 +479,8 @@ if(n>=0&&n<=40){var d=.127*Math.pow(92,(36-n)/39);out('g-out',[['Diameter',f(d,3
 var dm=v('y-d'),l=v('y-l');
 if(dm>0&&l>0)out('y-out',[['Weight',f(Math.PI*Math.pow(dm/20,2)*l*parseFloat($('y-m').value),2)+' g']]);else err('y-out','Enter diameter and length')}
 
-function all(){[units,purity,alloy,melt,colr,solder,chain,price,ring,stones,wire,band,roll].forEach(function(fn){try{fn()}catch(e){}})}
+function all(){[units,purity,raisePur,lowerPur,alloy,melt,colr,solder,chain,price,ring,stones,wire,band,roll
+].forEach(function(fn){try{fn()}catch(e){}})}
 
 var secs=[].slice.call(document.querySelectorAll('section')),tabs=$('tabs');
 function show(id){secs.forEach(function(s){s.hidden=s.id!==id});[].forEach.call(tabs.children,function(b){b.setAttribute('aria-selected',b.dataset.id===id)})}
