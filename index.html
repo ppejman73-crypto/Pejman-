@@ -163,6 +163,19 @@ td,th{border-bottom-color:var(--glb)}
 <p class="hint">Your lots are saved on this device.</p>
 <dl class="out" id="f-out"></dl>
 </section>
+<section id="tube" data-name="Tube" hidden>
+<h2>Tube from wire</h2>
+<p class="hint">Enter the inner diameter you want and the wall thickness. You get the strip to roll and the wire diameter that makes it. The strip width is the tube circumference and the strip length is the tube length. Leave the wire length empty to get a wire as long as the tube.</p>
+<div class="grid">
+<label>Inner diameter (mm)<input id="tb-d" type="number" inputmode="decimal" value="1" step="any"></label>
+<label>Wall thickness (mm)<input id="tb-t" type="number" inputmode="decimal" value="0.3" step="any"></label>
+<label>Tube length (cm)<input id="tb-l" type="number" inputmode="decimal" value="5" step="any"></label>
+<label>Loss in rolling and filing (%)<input id="tb-a" type="number" inputmode="decimal" value="0" step="any"></label>
+<label>Wire length you will cut (cm), optional<input id="tb-wl" type="number" inputmode="decimal" step="any"></label>
+<label>Metal<select id="tb-m"><option value="10.36">Sterling silver</option><option value="11.6">10k yellow gold</option><option value="13.0" selected>14k yellow gold</option><option value="15.5">18k yellow gold</option><option value="19.32">24k gold</option><option value="21.45">Platinum</option></select></label>
+</div>
+<dl class="out" id="tb-out"></dl>
+</section>
 
 <section id="color" data-name="Color" hidden>
 <h2>Gold colors</h2>
@@ -354,14 +367,7 @@ var FA={'Goldsmith’s Bench':'میز کار زرگر',
 Object.assign(FA,{'Raise purity':'بالا بردن عیار','Lower purity':'پایین آوردن عیار','Add purer metal (e.g. 999 silver) to raise the fineness.':'فلز خالص‌تر (مثلاً نقرهٔ 999) اضافه کنید تا عیار بالا برود.','Add a less pure metal (e.g. copper, fineness 0) to lower the fineness.':'فلز کم‌عیارتر (مثلاً مس، خلوص 0) اضافه کنید تا عیار پایین بیاید.','Weight you have (g)':'وزن موجود (گرم)','Current fineness (‰)':'عیار فعلی (‰)','Target fineness (‰)':'عیار هدف (‰)','Added metal fineness (‰)':'عیار فلز افزودنی (‰)','Add metal':'فلز لازم برای افزودن','Enter all values':'همهٔ مقدارها را وارد کنید','Target must be higher than current':'عیار هدف باید بیشتر از عیار فعلی باشد','Target must be lower than current':'عیار هدف باید کمتر از عیار فعلی باشد','Added metal must be purer than the target':'فلز افزودنی باید عیارش از عیار هدف بیشتر باشد','Added metal must be less pure than the target':'فلز افزودنی باید عیارش از عیار هدف کمتر باشد'});
 Object.assign(FA,{'Band':'تسمه','Band length':'طول تسمه','Strip length needed to make a ring from flat or half-round stock. Measured on the centerline of the strip, so the inner size stays correct.':'طول تسمه‌ای که برای ساخت انگشتر از تسمهٔ تخت یا نیم‌گرد لازم است. روی خط مرکزی تسمه محاسبه شده تا سایز داخلی دقیق بماند.','Thickness (mm)':'ضخامت تسمه (میلی‌متر)','Width (mm)':'عرض تسمه (میلی‌متر)','Extra for cutting and solder (mm)':'اضافه برای برش و لحیم (میلی‌متر)','Length table':'جدول طول تسمه','Strip length in cm for EU / ISO sizes and strip thicknesses.':'طول تسمه بر حسب سانتی‌متر برای سایزهای اروپا / ISO و ضخامت‌های مختلف.','Strip length':'طول تسمه','In millimeters':'بر حسب میلی‌متر','Strip weight':'وزن تسمه','Enter a valid size and thickness':'سایز و ضخامت معتبر وارد کنید','EU':'اروپا (EU)'});
 function t(s){return lang==='fa'&&FA[s]?FA[s]:s}
-Object.assign(FA,{'Rolling':'نورد','Wire to strip':'مفتول به تسمه','Rolling keeps the volume of metal the same. The wire whose cross-section equals the strip’s makes a strip of the same length, and a thicker wire makes a shorter piece. A good wire diameter lies between the strip thickness and width.':'نورد حجم فلز را ثابت نگه می‌دارد. مفتولی که مساحت مقطعش با تسمه برابر باشد، تسمه‌ای با همان طول می‌سازد و مفتول ضخیم‌تر قطعه‌ای کوتاه‌تر می‌سازد. قطر مناسب مفتول بین ضخامت و عرض تسمه است.','Strip width (mm)':'عرض تسمه (میلی‌متر)','Strip thickness (mm)':'ضخامت تسمه (میلی‌متر)','Strip length (cm)':'طول تسمه (سانتی‌متر)','Loss in rolling and filing (%)':'ضایعات نورد و سوهان‌کاری (%)','Wire diameter you have (mm)':'قطر مفتولی که دارید (میلی‌متر)','Wire diameter (same length)':'قطر مفتول (برای طول برابر)','Usable wire range':'محدودهٔ قطر مناسب مفتول','Nearest gauge (B&S)':'نزدیک‌ترین گیج (B&S)','Wire length needed':'طول مفتول لازم','Check':'بررسی','Wire diameter is outside the usable range':'قطر مفتول خارج از محدودهٔ مناسب است','Enter width, thickness and strip length':'عرض، ضخامت و طول تسمه را وارد کنید'});
-function roll(){var w=v('q-w'),t0=v('q-t'),L=v('q-l'),a=v('q-a')||0,dh=v('q-d'),dens=parseFloat($('q-m').value);
-if(!(w>0&&t0>0&&L>0))return err('q-out','Enter width, thickness and strip length');
-var A=w*t0*(1+a/100),dm=2*Math.sqrt(A/Math.PI),g=Math.round(36-39*Math.log(dm/.127)/Math.log(92)),dg=.127*Math.pow(92,(36-g)/39);
-var rows=[['Wire diameter (same length)',f(dm,2)+' mm'],['Usable wire range',f(Math.min(t0,w),2)+' – '+f(Math.max(t0,w),2)+' mm'],['Nearest gauge (B&S)',g+' ('+f(dg,2)+' mm)'],['Strip weight',f(w*t0*L*10/1000*dens,2)+' g']];
-if(dh>0){rows.push(['Wire length needed',f(A*L/(Math.PI*dh*dh/4),1)+' cm']);if(dh<Math.min(t0,w)||dh>Math.max(t0,w))rows.push(['Check',t('Wire diameter is outside the usable range')])}
-out('q-out',rows)}
-Object.assign(FA,{'Melt':'ذوب','Melt lots into one alloy':'ذوب چند طلا در یک آلیاژ','Add every lot of melted gold with its weight and purity. Enter the purity you want, and see how much fine gold or alloy metal to add.':'همهٔ طلاهای آب‌شده را با وزن و عیارشان اضافه کنید. عیار مورد نظر را بدهید تا ببینید چقدر طلای خالص یا فلز آلیاژ باید اضافه کنید.','Purity entered as':'عیار به صورت','Target purity':'عیار هدف','Final weight wanted (g), optional':'وزن نهایی مورد نظر (گرم)، اختیاری','Fine gold fineness (‰)':'خلوص طلای خالص برای افزودن (‰)','Alloy metal fineness (‰)':'خلوص فلز آلیاژ (‰)','Weight (g)':'وزن (گرم)','Add lot':'افزودن طلا','Add at least one lot with weight and purity':'حداقل یک طلا با وزن و عیار اضافه کنید','Check the target and the purity of the added metals':'عیار هدف و خلوص فلزهای افزودنی را بررسی کنید','Wanted weight is less than the lots weigh':'وزن مورد نظر از وزن طلاهای موجود کمتر است','This weight cannot give that purity with these lots. Leave final weight empty to see the smallest addition':'با این وزن نمی‌شود به آن عیار رسید. وزن نهایی را خالی بگذارید تا کمترین مقدار افزودنی را ببینید','Add fine gold':'طلای خالص برای افزودن','Add alloy metal':'فلز آلیاژ برای افزودن','Already at target purity':'عیار همین حالا برابر هدف است','Final weight':'وزن نهایی','Final fineness':'خلوص نهایی','Fineness of the lots now':'خلوص طلاهای موجود','Weight of the lots':'وزن طلاهای موجود','Pure gold in the lots':'طلای خالص در طلاهای موجود'});
+Object.assign(FA,{'Tube':'لولچه','Tube from wire':'لوله از مفتول','Enter the inner diameter you want and the wall thickness. You get the strip to roll and the wire diameter that makes it. The strip width is the tube circumference and the strip length is the tube length. Leave the wire length empty to get a wire as long as the tube.':'قطر داخلی دلخواه و ضخامت دیوار را وارد کنید. مشخصات تسمه و قطر مفتولی که آن را می‌سازد محاسبه می‌شود. عرض تسمه محیط لوله و طول تسمه همان طول لوله است. اگر طول مفتول را خالی بگذارید، مفتولی هم‌طول لوله حساب می‌شود.','Wall thickness (mm)':'ضخامت دیوار (میلی‌متر)','Tube length (cm)':'طول لوله (سانتی‌متر)','Wire length you will cut (cm), optional':'طول تکهٔ مفتول (سانتی‌متر)، اختیاری','Wire diameter for that length':'قطر مفتول برای آن طول','Strip width':'عرض تسمه','Strip thickness':'ضخامت تسمه','Outer diameter':'قطر بیرونی','Wire weight needed':'وزن مفتول لازم','Enter inner diameter, wall thickness and tube length':'قطر داخلی، ضخامت دیوار و طول لوله را وارد کنید'});
 function addLot(w,p){var d=document.createElement('div');d.className='lot';d.innerHTML='<input type="number" inputmode="decimal" step="any" aria-label="Weight (g)"><input type="number" inputmode="decimal" step="any" aria-label="Purity"><button type="button" aria-label="Remove">×</button>';d.children[0].value=w;d.children[1].value=p;d.children[2].onclick=function(){d.remove();all()};$('f-lots').appendChild(d)}
 function melt(){saveLots();var k=$('f-u').value==='k',cv=function(z){return k?z/24:z/1000};
 var T=cv(v('f-t')),wf=v('f-wf'),G=(v('f-g')||999)/1000,A=(v('f-a')||0)/1000,W=0,P=0,n=0,x=0,y=0,Wn;
@@ -385,6 +391,15 @@ $('f-clr').onclick=function(){$('f-lots').innerHTML='';all()};
 Object.assign(FA,{'Color':'رنگ','Gold colors':'رنگ‌های طلا','Pick a color to load its ratio, then change the ratios of the alloy part (everything except gold) to tune the shade. Ratios must add up to 100. These are typical starting recipes, so melt a small test first. Nickel can cause skin allergies.':'یک رنگ را انتخاب کنید تا نسبت‌هایش بیاید، سپس نسبت فلزهای بخش آلیاژ (همه به‌جز طلا) را برای تنظیم رنگ تغییر دهید. مجموع نسبت‌ها باید 100 باشد. اینها فرمول‌های معمولِ شروع هستند، پس اول یک نمونهٔ کوچک ذوب کنید. نیکل ممکن است حساسیت پوستی ایجاد کند.','Yellow':'زرد','Light yellow':'زرد روشن','Deep yellow':'زرد پررنگ','Rose':'رزگلد','Red':'قرمز','Green (pale)':'سبز (کم‌رنگ)','White (palladium)':'سفید (پالادیوم)','White (nickel)':'سفید (نیکل)','Target fineness (‰)':'عیار هدف (‰)','Fine gold':'طلای خالص','Silver':'نقره','Copper':'مس','Palladium':'پالادیوم','Nickel':'نیکل','Zinc':'روی','Total':'مجموع','White needs 18k or lower purity':'برای رنگ سفید عیار 18 یا کمتر لازم است','Color will be pale at this purity':'در این عیار رنگ کم‌رنگ می‌شود','Check the target purity, fine gold purity and weight':'عیار هدف، خلوص طلای خالص و وزن را بررسی کنید'});
 var CR={'Yellow':{Ag:50,Cu:50},'Light yellow':{Ag:65,Cu:35},'Deep yellow':{Ag:30,Cu:70},'Rose':{Ag:10,Cu:90},'Red':{Cu:100},'Green (pale)':{Ag:100},'White (palladium)':{Pd:60,Ag:36,Zn:4},'White (nickel)':{Ni:48,Cu:40,Zn:12}};
 var MN={Ag:'Silver',Cu:'Copper',Pd:'Palladium',Ni:'Nickel',Zn:'Zinc'};
+function tube(){var id=v('tb-d'),th=v('tb-t'),Lt=v('tb-l'),a=v('tb-a')||0,lw=v('tb-wl'),dens=parseFloat($('tb-m').value);
+if(!(id>0&&th>0&&Lt>0))return err('tb-out','Enter inner diameter, wall thickness and tube length');
+var W=Math.PI*(id+th),A=W*th*(1+a/100),V=A*Lt*10,dm=2*Math.sqrt(A/Math.PI),dl=lw>0?2*Math.sqrt(V/(Math.PI*lw*10)):0,ds=dl||dm,
+g=Math.round(36-39*Math.log(ds/.127)/Math.log(92)),dg=.127*Math.pow(92,(36-g)/39);
+var rows=[['Wire diameter (same length)',f(dm,2)+' mm']];
+if(dl)rows.push(['Wire diameter for that length',f(dl,2)+' mm']);
+rows.push(['Strip width',f(W,2)+' mm'],['Strip thickness',f(th,2)+' mm'],['Outer diameter',f(id+2*th,2)+' mm'],['Nearest gauge (B&S)',g+' ('+f(dg,2)+' mm)'],['Wire weight needed',f(V/1000*dens,2)+' g']);
+if(ds<th||ds>W)rows.push(['Check',t('Wire diameter is outside the usable range')]);
+out('tb-out',rows)}
 function colr(){var T=v('k-t')/1000,W=v('k-w'),G=(v('k-g')||999)/1000,r={Ag:v('k-ag')||0,Cu:v('k-cu')||0,Zn:v('k-zn')||0,Pd:v('k-pd')||0,Ni:v('k-ni')||0},sm=r.Ag+r.Cu+r.Zn+r.Pd+r.Ni,white=r.Pd+r.Ni>0;
 if(!(T>0&&T<G&&W>0))return err('k-out','Check the target purity, fine gold purity and weight');
 if(Math.abs(sm-100)>.01)return out('k-out',[['Ratios must add up to 100',f(sm,2)]]);
@@ -480,7 +495,7 @@ if(n>=0&&n<=40){var d=.127*Math.pow(92,(36-n)/39);out('g-out',[['Diameter',f(d,3
 var dm=v('y-d'),l=v('y-l');
 if(dm>0&&l>0)out('y-out',[['Weight',f(Math.PI*Math.pow(dm/20,2)*l*parseFloat($('y-m').value),2)+' g']]);else err('y-out','Enter diameter and length')}
 
-function all(){[units,purity,raisePur,lowerPur,alloy,melt,colr,solder,chain,price,ring,stones,wire,band,roll
+function all(){[units,purity,raisePur,lowerPur,alloy,melt,tube,colr,solder,chain,price,ring,stones,wire,band,roll
 ].forEach(function(fn){try{fn()}catch(e){}})}
 
 var secs=[].slice.call(document.querySelectorAll('section')),tabs=$('tabs');
