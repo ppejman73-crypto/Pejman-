@@ -1,5 +1,5 @@
 // بعد از هر تغییر در برنامه، شمارهٔ نسخه را بالا ببرید (gb-v2, gb-v3, ...)
-const CACHE = 'gb-v1';
+const CACHE = 'gb-v2';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
